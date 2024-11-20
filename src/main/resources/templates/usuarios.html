@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuários</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0d1117; /* Preto com tom azul escuro */
+            color: #f0f6fc; /* Branco suave */
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-weight: 600;
+            color: #58a6ff; /* Azul claro */
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .form-container {
+            background-color: #161b22; /* Fundo escuro */
+            border: 1px solid #30363d; /* Borda cinza escuro */
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            background-color: #21262d; /* Fundo escuro mais claro */
+            color: #f0f6fc;
+            border: 1px solid #30363d; /* Borda */
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background-color: #30363d; /* Fundo mais claro no foco */
+            border-color: #58a6ff; /* Azul claro */
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        .btn-create {
+            background-color: #238636; /* Verde */
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-create:hover {
+            background-color: #2ea043; /* Verde mais claro */
+            transform: scale(1.05);
+        }
+
+        .user-card {
+            background: linear-gradient(135deg, #21262d, #30363d); /* Fundo em degrade */
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .user-card h5 {
+            color: #58a6ff; /* Azul claro */
+            margin-bottom: 10px;
+        }
+
+        .action-buttons a {
+            background-color: #161b22; /* Fundo escuro */
+            color: #58a6ff; /* Azul claro */
+            border: 1px solid #30363d;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .action-buttons a:hover {
+            background-color: #30363d;
+            color: #f0f6fc;
+            transform: scale(1.05);
+        }
+
+        .btn-edit:hover {
+            background-color: rgba(255, 255, 0, 0.4); /* Amarelo no hover */
+        }
+
+        .btn-delete:hover {
+            background-color: rgba(255, 0, 0, 0.4); /* Vermelho no hover */
+        }
+
+        .btn-details:hover {
+            background-color: rgba(0, 255, 0, 0.4); /* Verde no hover */
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Usuários</h1>
+
+    <!-- Formulário para criar ou editar usuário -->
+    <div id="createForm" class="form-container">
+        <h3 class="mb-4" th:text="${isEditing} ? 'Editar Usuário' : 'Novo Usuário'">Novo Usuário</h3>
+        <form th:action="${isEditing} ? @{/usuarios/{id}(id=${userRequest.id})} : @{/usuarios}" method="post" th:object="${userRequest}">
+            <input type="hidden" th:if="${isEditing}" th:field="*{id}" />
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" class="form-control" th:field="*{nome}" minlength="3" required>
+                <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" th:field="*{email}" required>
+                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+            </div>
+            <button type="submit" class="btn btn-create" th:text="${isEditing} ? 'Atualizar' : 'Salvar'">Salvar</button>
+        </form>
+    </div>
+
+    <!-- Lista de usuários -->
+    <div class="row">
+        <div class="col-md-4" th:each="user : ${users}">
+            <div class="user-card">
+                <h5 th:text="${user.nome}"></h5>
+                <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+                <div class="action-buttons">
+                    <a th:href="@{/usuarios/{id}/editar(id=${user.id})}" class="btn-edit">Editar</a>
+                    <a th:href="@{/usuarios/{id}/excluir(id=${user.id})}" class="btn-delete"
+                       onclick="return confirm('Tem certeza que deseja excluir este usuário?')">Deletar</a>
+                    <a th:href="@{/eletros/usuario/{userId}(userId=${user.id})}" class="btn-details">Detalhes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

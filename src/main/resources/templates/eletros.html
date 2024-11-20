@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Eletrodomésticos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0d1117; /* Preto com tom de azul escuro */
+            color: #f0f6fc; /* Branco suave */
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            color: #c9d1d9; /* Cinza claro */
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            background-color: #161b22; /* Fundo escuro */
+            color: #f0f6fc;
+            border: 1px solid #30363d; /* Cinza escuro */
+            border-radius: 10px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background-color: #21262d;
+            border-color: #58a6ff; /* Azul claro */
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background-color: #238636; /* Verde escuro */
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2ea043; /* Verde mais claro */
+            transform: scale(1.1);
+        }
+
+        .btn-warning {
+            background-color: #d29922;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            background-color: #e3b341;
+        }
+
+        .btn-danger {
+            background-color: #da3633;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #f85149;
+        }
+
+        .btn-back {
+            background-color: #1a73e8; /* Azul escuro */
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-back:hover {
+            background-color: #4285f4; /* Azul mais claro */
+            transform: scale(1.05);
+        }
+
+        .card {
+            background-color: #161b22; /* Fundo escuro */
+            color: #f0f6fc;
+            border: 1px solid #30363d; /* Borda escura */
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .card-body h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #58a6ff; /* Azul claro */
+        }
+
+        .table {
+            background-color: #161b22;
+            border-radius: 10px;
+            overflow: hidden;
+            color: #f0f6fc;
+        }
+
+        .table thead {
+            background-color: #30363d; /* Cinza escuro */
+        }
+
+        .table tbody tr:hover {
+            background-color: #21262d; /* Cinza escuro mais claro */
+        }
+
+        #chat-container {
+            background-color: #161b22; /* Fundo escuro */
+            color: #ffffff;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            width: 50%; /* Largura aumentada */
+        }
+
+        #form-container {
+            width: 45%; /* Ajuste para manter o layout balanceado */
+        }
+
+        .row-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .alert {
+            background-color: #21262d; /* Fundo suave */
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <a href="/usuarios" class="btn-back">Voltar para Usuários</a>
+    <h1>Eletrodomésticos de <span th:text="${user.nome}"></span></h1>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <div class="row-container">
+        <!-- Formulário -->
+        <div id="form-container">
+            <form th:action="@{/eletros/usuario/{userId}/salvar(userId=${currentUserId})}" th:object="${eletroRequest}" method="post">
+                <input type="hidden" th:field="*{id}"/> <!-- Campo oculto para ID do eletrodoméstico -->
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" th:field="*{nome}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <input type="text" id="tipo" th:field="*{tipo}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="potencia">Potência (W)</label>
+                    <input type="number" id="potencia" th:field="*{potencia}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="uso">Uso (horas/dia)</label>
+                    <input type="number" id="uso" th:field="*{uso}" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" th:text="${eletroRequest.id != null} ? 'Atualizar' : 'Salvar'">Salvar</button>
+            </form>
+        </div>
+
+        <!-- Chat Integrado -->
+        <div id="chat-container">
+            <h2>Assistente Virtual</h2>
+            <iframe src="/chat" style="width: 100%; height: 400px; border: none;"></iframe>
+        </div>
+    </div>
+
+    <!-- Lista -->
+    <h2 class="mt-5">Lista de Eletrodomésticos</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4" th:each="eletro : ${eletros}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 th:text="${eletro.nome}"></h5>
+                            <p>
+                                Tipo: <span th:text="${eletro.tipo}"></span><br>
+                                Potência: <span th:text="${eletro.potencia}"></span><br>
+                                Uso (horas/dia): <span th:text="${eletro.uso}"></span>
+                            </p>
+                            <div class="d-flex justify-content-between">
+                                <form th:action="@{/eletros/{id}/editar(id=${eletro.id})}" method="get" style="display:inline;">
+                                    <button class="btn btn-warning btn-sm">Editar</button>
+                                </form>
+                                <form th:action="@{/eletros/{id}/excluir(id=${eletro.id})}" method="post" style="display:inline;">
+                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir?')">Excluir</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
