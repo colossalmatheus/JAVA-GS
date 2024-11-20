@@ -1,0 +1,14 @@
+package br.com.fiap.javags.repository;
+
+import br.com.fiap.javags.entity.Eletro;
+import br.com.fiap.javags.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface EletroRepository extends JpaRepository<Eletro, Long> {
+    List<Eletro> findByUser(User user);
+
+}
